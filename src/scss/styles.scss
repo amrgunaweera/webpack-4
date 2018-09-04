@@ -1,0 +1,11 @@
+$mainColor: #7777bb;
+
+.intro-component{
+    padding: 20px;
+    background: $mainColor;
+    color: #fff;
+
+    h1{
+        text-transform: uppercase;
+    }
+}

@@ -1,10 +1,12 @@
 const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     // Define entry point
     entry: {
         main: [
-            "./src/scripts/main.js", // Multiple files will concatinate
+            "./src/scripts/main.js",
+            //"./src/scss/styles.scss" // Multiple files will concatinate
         ]
     },
     mode: "development", // development or production(min file)
@@ -32,8 +34,10 @@ module.exports = {
 
             // SCSS
             {
-                test: /\.scss$/,
-                use: [{
+                /* test: /\.(scss)$/,
+                loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader']) */
+
+                /* use: [{
                     loader: "style-loader"
                 }, {
                     loader: "css-loader",
@@ -46,10 +50,14 @@ module.exports = {
                         includePaths: ["../scss/styles.scss"],
                         sourceMap: true
                     }
-                }]
+                }] */
               }
         ]
     },
+
+    plugins: [
+        new ExtractTextPlugin("./dist/css/styles.css"),
+    ],
 
     devServer: {
         contentBase: "dist"

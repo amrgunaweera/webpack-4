@@ -1,3 +1,3 @@
 var message = require('./people.js');
 
-import Styles from '../scss/styles.scss';
+//import Styles from '../scss/styles.scss';

@@ -1,5 +1,7 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+//const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     // Define entry point
@@ -9,31 +11,43 @@ module.exports = {
             //"./src/scss/styles.scss" // Multiple files will concatinate
         ]
     },
-    mode: "development", // development or production(min file)
+    //mode: "development", // development or production(min file)
     // Define output point
     output: {
       filename: '[name]-bundle.js',
-      path: path.resolve(__dirname, 'dist/js')
+      path: path.resolve(__dirname, 'dist')
     },
 
     module: {
         rules: [
+            //html
+            {
+                test: /\.html$/,
+                use: [
+                  {
+                    loader: "html-loader",
+                    options: { minimize: true }
+                  }
+                ]
+            },
             // Babel
             {
                 test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env']
-                        }
-                    }
-                ]
+                exclude: /node_modules/,
+                use: {
+                  loader: "babel-loader"
+                }
             },
 
             // SCSS
             {
+                test: /\.scss$/,
+                use: [
+                    // fallback to style-loader in development
+                    process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "sass-loader"
+                ]
                 /* test: /\.(scss)$/,
                 loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader']) */
 
@@ -51,12 +65,26 @@ module.exports = {
                         sourceMap: true
                     }
                 }] */
+            },
+
+            //CSS
+            {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader"]
               }
         ]
     },
-
     plugins: [
-        new ExtractTextPlugin("./dist/css/styles.css"),
+        new HtmlWebPackPlugin({
+            template: "./src/index.html",
+            filename: "./index.html"
+        }),
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "[name].css",
+            chunkFilename: "[id].css"
+        })
     ],
 
     devServer: {
